@@ -1,0 +1,6 @@
+# rust-cli-tools/Cargo.toml
+[workspace]
+members = [
+    "copy_random_files",
+    # Add other tools here
+]
