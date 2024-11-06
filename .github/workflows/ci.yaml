@@ -27,7 +27,7 @@ jobs:
           toolchain: ${{ matrix.rust-version }}
           override: true
           components: rustfmt, clippy
-          targets: x86_64-unknown-linux-gnu
+          target: x86_64-unknown-linux-gnu  # Corrected input parameter
 
       # 3. Cache Cargo registry
       - name: Cache Cargo registry
