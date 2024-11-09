@@ -3,6 +3,7 @@
 members = [
     "copy_random_files",
     "find_missing_files",
+    "find_missing_files2",
     "find_duplicates",
     # Add other tools here
 ]

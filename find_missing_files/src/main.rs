@@ -33,6 +33,7 @@ fn main() {
             std::process::exit(1);
         }
     };
+    eprintln!("Total files in dir1: {}", dir1_basenames.len());
 
     // Collect filenames from dir2
     let dir2_filenames = match get_filenames(dir2) {
@@ -42,6 +43,7 @@ fn main() {
             std::process::exit(1);
         }
     };
+    eprintln!("Total files in dir2: {}", dir2_filenames.len());
 
     // Create a HashSet for quick lookup
     let dir2_filenames_set: HashSet<String> = dir2_filenames.into_iter().collect();
@@ -98,7 +100,11 @@ fn get_basenames(dir: &str) -> Result<Vec<String>, std::io::Error> {
                     if let Some(filename) = path.file_stem().and_then(|f| f.to_str()) {
                         basenames.push(filename.to_string());
                     }
+                } else {
+                    basenames.push(path.file_name().unwrap().to_str().unwrap().to_string());
                 }
+            } else {
+                basenames.push(path.file_name().unwrap().to_str().unwrap().to_string());
             }
         }
     }
