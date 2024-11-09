@@ -2,6 +2,8 @@
 [workspace]
 members = [
     "copy_random_files",
+    "find_missing_files",
+    "find_duplicates",
     # Add other tools here
 ]
 resolver = "2"  # Add this line to specify resolver version 2
