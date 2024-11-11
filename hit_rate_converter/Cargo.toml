@@ -1,0 +1,9 @@
+[package]
+name = "hit_rate_converter"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.0", features = ["derive"] }
+rust_xlsxwriter = "0.79.2"
+csv = "1.1"
