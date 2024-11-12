@@ -2,7 +2,7 @@
 repos:
   # Standard pre-commit hooks for generic tasks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0  # Use the latest stable version
+    rev: v5.0.0  # Use the latest stable version
     hooks:
       - id: trailing-whitespace
         name: Remove trailing whitespace
