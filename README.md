@@ -1,2 +1,14 @@
 # rust-cli-tools
-My CLI tools written by Rust
+
+## cat_xlsx Usage:
+
+```shell
+Usage: cat_xlsx <XLSX_FILE>
+
+Arguments:
+  <XLSX_FILE>  Path to the xlsx file
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
+```
