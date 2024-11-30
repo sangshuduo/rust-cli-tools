@@ -10,6 +10,9 @@ struct Args {
     xlsx_file: PathBuf,
 }
 
+/// Reads and displays the contents of an Excel (.xlsx) file.
+/// Iterates through all worksheets and prints their contents in a tab-separated format.
+/// Each worksheet is clearly delimited and labeled.
 fn main() -> Result<(), Box<dyn Error>> {
     // Get the path to the xlsx file from command-line arguments
     let args = Args::parse();
