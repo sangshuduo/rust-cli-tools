@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Validate file extension
     if !path
         .extension()
-        .map_or(false, |ext| ext.eq_ignore_ascii_case("xlsx"))
+        .is_some_and(|ext| ext.eq_ignore_ascii_case("xlsx"))
     {
         eprintln!("Error: File must have .xlsx extension");
         std::process::exit(1);
