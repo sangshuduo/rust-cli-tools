@@ -17,7 +17,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let path = args.xlsx_file;
     // Check if the file exists
     if !path.exists() {
-        eprintln!("Error: File '{}' does not exist.", path.display());
+    // Validate file extension
+    if !path.extension().map_or(false, |ext| ext.eq_ignore_ascii_case("xlsx")) {
+        eprintln!("Error: File must have .xlsx extension");
         std::process::exit(1);
     }
 
