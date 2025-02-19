@@ -7,3 +7,5 @@ edition = "2021"
 chrono = "0.4"
 regex = "1"
 indicatif = "0.17.11"
+clap = { version = "4.5.30", features = ["derive"] }
+anyhow = "1.0.95"
