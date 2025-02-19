@@ -1,0 +1,9 @@
+[package]
+name = "find_longtime_files"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = "0.4"
+regex = "1"
+indicatif = "0.17.11"
