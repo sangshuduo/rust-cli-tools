@@ -6,6 +6,13 @@ use regex::Regex;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
+/// Represents a file's processing time.
+#[derive(Debug)]
+struct ProcessingTime {
+    duration: f64,
+    filename: String,
+}
+
 /// Find log processing times from a log file.
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -56,8 +63,9 @@ fn extract_filename(line: &str) -> Option<String> {
 }
 
 /// Compute processing time differences from the log file.
-/// Returns a vector of tuples (processing time in seconds, filename).
-fn compute_diffs(log_file: &str) -> Result<Vec<(f64, String)>> {
+/// Returns a vector of ProcessingTime structs containing the duration (in seconds)
+/// and the corresponding filename.
+fn compute_diffs(log_file: &str) -> Result<Vec<ProcessingTime>> {
     // Open the log file.
     let file =
         File::open(log_file).with_context(|| format!("Error opening log file: {}", log_file))?;
@@ -74,8 +82,8 @@ fn compute_diffs(log_file: &str) -> Result<Vec<(f64, String)>> {
             .progress_chars("##-"),
     );
 
-    // Store (processing time in seconds, filename) pairs.
-    let mut diffs: Vec<(f64, String)> = Vec::new();
+    // Store processing time entries.
+    let mut diffs: Vec<ProcessingTime> = Vec::new();
 
     // Variables to hold the previous log entry's timestamp and file name.
     let mut prev_dt: Option<NaiveDateTime> = None;
@@ -115,7 +123,10 @@ fn compute_diffs(log_file: &str) -> Result<Vec<(f64, String)>> {
         if let (Some(prev), Some(prev_filename)) = (prev_dt, &prev_file) {
             let duration = naive_dt.signed_duration_since(prev);
             let diff_seconds = duration.num_microseconds().unwrap_or(0) as f64 / 1_000_000.0;
-            diffs.push((diff_seconds, prev_filename.clone()));
+            diffs.push(ProcessingTime {
+                duration: diff_seconds,
+                filename: prev_filename.clone(),
+            });
         }
 
         prev_dt = Some(naive_dt);
@@ -136,11 +147,16 @@ fn main() -> Result<()> {
         } => {
             let mut diffs = compute_diffs(&log_file)?;
             // Sort by processing time in descending order.
-            diffs.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap());
+            diffs.sort_by(|a, b| b.duration.partial_cmp(&a.duration).unwrap());
 
             println!("Top {} files with longest processing times:", num_files);
-            for (i, (duration, file)) in diffs.iter().take(num_files).enumerate() {
-                println!("{}. {} took {:.6} seconds", i + 1, file, duration);
+            for (i, entry) in diffs.iter().take(num_files).enumerate() {
+                println!(
+                    "{}. {} took {:.6} seconds",
+                    i + 1,
+                    entry.filename,
+                    entry.duration
+                );
             }
         }
         Command::Avg { log_file } => {
@@ -148,7 +164,7 @@ fn main() -> Result<()> {
             if diffs.is_empty() {
                 println!("No processing times found in the log file.");
             } else {
-                let total: f64 = diffs.iter().map(|(duration, _)| duration).sum();
+                let total: f64 = diffs.iter().map(|entry| entry.duration).sum();
                 let avg = total / (diffs.len() as f64);
                 println!("Average processing time: {:.6} seconds", avg);
             }
