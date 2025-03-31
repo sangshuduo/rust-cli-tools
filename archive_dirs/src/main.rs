@@ -219,10 +219,27 @@ fn main() -> io::Result<()> {
                     dir_overwrite += 1;
                 }
 
-                // Move the file
-                fs::rename(&path, &dest_path)?;
-                dir_moved += 1;
-                pb.inc(1);
+                // Move the file and verify it was moved successfully
+                match fs::rename(&path, &dest_path) {
+                    Ok(_) => {
+                        // Verify the file exists in destination and not in source
+                        if dest_path.exists() && !path.exists() {
+                            dir_moved += 1;
+                            pb.inc(1);
+                        } else {
+                            warn!("File {} was not properly moved", path.display());
+                            // Try to remove the source file if it still exists
+                            if path.exists() {
+                                if let Err(e) = fs::remove_file(&path) {
+                                    warn!("Failed to remove source file {}: {}", path.display(), e);
+                                }
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        warn!("Failed to move file {}: {}", path.display(), e);
+                    }
+                }
             }
         }
 
@@ -241,18 +258,31 @@ fn main() -> io::Result<()> {
     println!("\nRemoving empty directories...");
     info!("Removing empty directories...");
     for dir in &dirs {
-        if let Err(e) = fs::remove_dir(dir) {
-            let warn_msg = format!(
-                "Warning: Failed to remove directory {}: {}",
-                dir.display(),
-                e
-            );
-            eprintln!("{}", warn_msg);
-            warn!("{}", warn_msg);
-        } else {
-            let remove_msg = format!("  Removed: {}", dir.file_name().unwrap().to_string_lossy());
-            println!("{}", remove_msg);
-            info!("{}", remove_msg);
+        // Double check if directory is empty before removing
+        if let Ok(mut entries) = fs::read_dir(dir) {
+            if entries.next().is_none() {
+                if let Err(e) = fs::remove_dir(dir) {
+                    let warn_msg = format!(
+                        "Warning: Failed to remove directory {}: {}",
+                        dir.display(),
+                        e
+                    );
+                    eprintln!("{}", warn_msg);
+                    warn!("{}", warn_msg);
+                } else {
+                    let remove_msg =
+                        format!("  Removed: {}", dir.file_name().unwrap().to_string_lossy());
+                    println!("{}", remove_msg);
+                    info!("{}", remove_msg);
+                }
+            } else {
+                let warn_msg = format!(
+                    "Warning: Directory {} is not empty, skipping removal",
+                    dir.display()
+                );
+                eprintln!("{}", warn_msg);
+                warn!("{}", warn_msg);
+            }
         }
     }
 
