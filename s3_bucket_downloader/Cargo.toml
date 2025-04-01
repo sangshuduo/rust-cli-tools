@@ -1,0 +1,13 @@
+[package]
+name = "s3_bucket_downloader"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+aws-config = "1.6.1"
+aws-sdk-s3 = "1.82.0"
+tokio = { version = "1.44.1", features = ["full"] }
+rayon = "1.10"
+futures = "0.3.31"
+indicatif = "0.17.11"
+clap = { version = "4.5.34", features = ["derive"] }
