@@ -10,6 +10,7 @@ members = [
     "find_files_in_list",
     "random_pairs_of_s3file",
     "find_log_processtime",
+    "archive_dirs",
     # Add other tools here
 ]
 resolver = "2"  # Add this line to specify resolver version 2
