@@ -274,8 +274,7 @@ async fn download_object_with_retry(
         }
     }
 
-    Err(last_error
-        .unwrap_or_else(|| std::io::Error::new(std::io::ErrorKind::Other, "Unknown error")))
+    Err(last_error.unwrap_or_else(|| std::io::Error::other("Unknown error")))
 }
 
 async fn download_object(client: &Client, bucket: &str, key: &str) -> Result<Vec<u8>> {
@@ -285,12 +284,12 @@ async fn download_object(client: &Client, bucket: &str, key: &str) -> Result<Vec
         .key(key)
         .send()
         .await
-        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+        .map_err(std::io::Error::other)?;
     let data: ByteStream = resp.body;
     let bytes = data
         .collect()
         .await
-        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?
+        .map_err(std::io::Error::other)?
         .into_bytes()
         .to_vec();
     Ok(bytes)
