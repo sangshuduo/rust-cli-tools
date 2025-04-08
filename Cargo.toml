@@ -14,4 +14,8 @@ members = [
     "s3_bucket_downloader",
     # Add other tools here
 ]
-resolver = "2"  # Add this line to specify resolver version 2
+resolver = "2"
+
+[workspace.dependencies]
+calamine = "=0.22.0"
+zip = "=0.6.4"
