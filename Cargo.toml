@@ -12,6 +12,7 @@ members = [
     "find_log_processtime",
     "archive_dirs",
     "s3_bucket_downloader",
+    "sort_perf_log",
     # Add other tools here
 ]
 resolver = "2"

@@ -1,0 +1,12 @@
+[package]
+name = "sort_perf_log"
+version = "0.1.0"
+edition = "2021"
+description = "Parse and sort video processing performance logs by total processing time"
+
+[dependencies]
+regex = "1"
+
+[profile.release]
+opt-level = 3
+lto = true
